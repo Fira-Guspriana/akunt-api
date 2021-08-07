@@ -146,19 +146,48 @@ class TransactionController extends Controller
      */
     public function destroy($id)
     {
-        $transaction = Transaction::findOrFail($id);
+        // try {
+        //     $transaction = Transaction::findOrFail($id);
+        // } catch (ModelNotFoundException $exception) {
+        //     return response()->json([
+        //         'message' => "data tidak ditemukan"
+        //     ]);    }
 
-        try {
+        // try {
+
+        //     $transaction->delete();
+        //     $response = [
+        //         'message' => 'Transaction deleted'
+        //     ];
+
+        //     return response()->json($response, Response::HTTP_OK);
+        // } catch (QueryException $e) {
+        //     return response()->json([
+        //         'message' => "Failed" . $e->errorInfo
+        //     ]);
+        // }
+
+        $transaction = Transaction::find($id);
+    if ($transaction == null) {
+        // User not found, show 404 or whatever you want to do
+        // example:
+        return response()->json([
+                'message' => "data tidak ditemukan"
+            ], 404);    
+    } else {
+        try{
             $transaction->delete();
             $response = [
                 'message' => 'Transaction deleted'
             ];
 
             return response()->json($response, Response::HTTP_OK);
+            
         } catch (QueryException $e) {
             return response()->json([
-                'message' => "Failed" . $e->errorInfo
-            ]);
+                'message' => "Server tidak dapat menghapus"
+            ], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
+        } 
     }
 }
